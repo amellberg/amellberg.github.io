@@ -348,7 +348,7 @@ Quadrix.prototype.newGame = function() {
 
    document.getElementById("score").textContent = "Score: 0";
    document.getElementById("level").textContent = "Level: 0";
-   
+
    var self = this;
    this.gameTimer = setInterval(function() {
       self.game.tick();
@@ -399,12 +399,10 @@ Quadrix.prototype.handleLevelUpdate = function(level) {
 
 Quadrix.getTickRate = (function() {
    return function(level) {
-      if (level <= 4)
-         return 600 - 90 * level;
-      else if (level <= 5 && level <= 7)
-         return 240 - 50 * (level - 4);
+      if (level <= 7)
+         return 600 - 70 * level;
       else
-         return Math.max(90 - 20 * (level - 7), 10);
+         return Math.max(110 - 20 * (level - 7), 10);
    }
 })();
 

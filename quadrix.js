@@ -346,8 +346,8 @@ Quadrix.prototype.newGame = function() {
    this.game.spawnBlock();
    this.game.renderBoard();
 
-   document.getElementById("level").textContent = "Score: 0";
-   document.getElementById("score").textContent = "Level: 0";
+   document.getElementById("score").textContent = "Score: 0";
+   document.getElementById("level").textContent = "Level: 0";
    
    var self = this;
    this.gameTimer = setInterval(function() {
@@ -374,7 +374,7 @@ Quadrix.prototype.resumeGame = function() {
    this.gameStatus = "running";
 }
 
-// Passed as a callback to Game, executed on game over from tick()
+// Passed as a callback to Game, executed on game over
 Quadrix.prototype.stopGame = function() {
    clearInterval(this.gameTimer);
    removeEventListener("keydown", this.handleGameInput);

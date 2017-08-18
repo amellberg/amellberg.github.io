@@ -346,6 +346,9 @@ Quadrix.prototype.newGame = function() {
    this.game.spawnBlock();
    this.game.renderBoard();
 
+   document.getElementById("level").textContent = "Score: 0";
+   document.getElementById("score").textContent = "Level: 0";
+   
    var self = this;
    this.gameTimer = setInterval(function() {
       self.game.tick();

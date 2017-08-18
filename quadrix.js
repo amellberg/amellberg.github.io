@@ -399,10 +399,10 @@ Quadrix.prototype.handleLevelUpdate = function(level) {
 
 Quadrix.getTickRate = (function() {
    return function(level) {
-      if (level <= 9)
-         return 800 - 80 * level;
+      if (level <= 7)
+         return 700 - 90 * level;
       else
-         return Math.max(80 - 30 * (level - 9), 10);
+         return Math.max(70 - 10 * (level - 7), 10);
    }
 })();
 

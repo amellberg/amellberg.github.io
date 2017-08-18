@@ -1,0 +1,89 @@
+body {
+   background-color: rgb(22, 22, 22);
+}
+
+#left-container {
+   width: 225px;
+   font-family: 'Share Tech Mono', monospace;
+   margin: 12px;
+   float: left;
+   text-align: center;
+   /*padding-left: 64px;
+   padding-right: 64px;*/
+   padding-top: 24px;
+}
+
+#header {
+   color: rgba(255, 255, 255, 0.25);
+   font-size: 26px;
+   margin-bottom: 30px;
+   /*text-align: center;*/
+}
+
+.stat {
+   color: rgba(255, 255, 255, 0.7);
+   font-size: 14px;
+   margin-bottom: 8px;
+   /*text-align: center;*/
+}
+
+.buttons {
+   margin-top: 48px;
+}
+
+.button {
+   color: rgba(255, 255, 255, 0.5);
+   font-size: 12px;
+   text-align: center;
+   border: 1px solid rgba(255, 255, 255, 0.2);
+   padding: 6px;
+   padding-left: 10px;
+   padding-right: 10px;
+   display: inline-block;
+   cursor: pointer;
+   border-radius: 3px;
+}
+.button:hover {
+   color: rgba(255, 255, 255, 0.6);
+   border: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+#root {
+   margin: 12px;
+   float: left;
+   border: 1px solid rgb(30,30,30);
+   /*outline: none;*/
+   /*box-shadow: 0px 0px 20px 0px rgba(255, 255, 255, 0.05);*/
+}
+
+table {
+   outline: none;
+   /*margin: 0px auto;*/
+   background-color: black;
+   border: 1px solid #282828;
+   /*border-radius: 10px;*/
+   /*table-layout: fixed;*/
+   border-spacing: 1px;
+   border-collapse: collapse;
+}
+
+td {
+   background-color: rgb(0, 0, 0);
+   border: 1px solid rgb(20,20,20);
+   width: 25px;
+   height: 25px;
+   /* Below is for debug purposes */
+   color: white;
+   font-family: monospace;
+   font-size: 8px;
+   text-align: center;
+}
+
+/* Might wanna do these colors in hex instead */
+.I { background-color: turquoise; }
+.J { background-color: royalblue; }
+.L { background-color: orange; }
+.O { background-color: greenyellow; }
+.S { background-color: forestgreen; }
+.T { background-color: darkorchid; }
+.Z { background-color: crimson; }

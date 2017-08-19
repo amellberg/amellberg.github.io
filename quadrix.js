@@ -105,8 +105,8 @@ Game.prototype.spawnBlock = function() {
 
    var self = this;
    nextBlockCoords.forEach(function(coord) {
-      self.blockPreview.childNodes[coord.y - minY].childNodes[coord.x - minX].className
-            = self.nextBlockType;
+      self.blockPreview.childNodes[coord.y - minY]
+            .childNodes[coord.x - minX].className = self.nextBlockType;
    });
 };
 
@@ -169,7 +169,6 @@ Game.prototype.updateScore = function(linesCleared) {
 };
 
 Game.prototype.tick = function() {
-
    this.lowerBlock();
    this.renderBoard();
 };
@@ -460,14 +459,8 @@ Quadrix.getTickRate = (function() {
    return function(level) {
       if (level <= 6)
          return 600 - 70 * level;
-      else if (level == 7)
-         return 140;
-      else if (level == 8)
-         return 120;
-      else if (level == 9)
-         return 100;
       else
-         return Math.max(100 - 20 * (level - 9), 20);
+         return Math.max(140 - 20 * (level - 7), 20);
    };
 })();
 
@@ -483,6 +476,8 @@ actionButton.addEventListener("click", function() {
       actionButton.textContent = "Pause";
    } else if (quadrix.gameStatus == "running") {
       quadrix.pauseGame();
+      for (var i = 0; i < 20; i++)
+         console.log(Quadrix.getTickRate(i));
    } else if (quadrix.gameStatus == "paused") {
       quadrix.resumeGame();
       actionButton.textContent = "Pause";

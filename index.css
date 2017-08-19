@@ -49,11 +49,6 @@ body {
    border: 1px solid rgba(255, 255, 255, 0.4);
 }
 
-#preview-container {
-   border: 1px solid rgb(30,30,30);
-   display: inline-table;
-}
-
 #root {
    margin: 12px;
    float: left;
@@ -86,6 +81,11 @@ table {
    font-family: monospace;
    font-size: 8px;
    text-align: center;
+}
+
+#preview-container {
+   border: 1px solid rgb(30,30,30);
+   display: inline-table;
 }
 
 #previewTable {

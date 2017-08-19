@@ -97,8 +97,6 @@ Game.prototype.spawnBlock = function() {
 
    var height = maxY - minY + 1;
    var width = maxX - minX + 1;
-   console.log("height: ", height);
-   console.log("width: ", width);
 
    while (this.blockPreview.firstChild)
       this.blockPreview.removeChild(this.blockPreview.firstChild);
@@ -111,7 +109,6 @@ Game.prototype.spawnBlock = function() {
       }
       this.blockPreview.appendChild(row);
    }
-   console.log(this.blockPreview);
 
    var self = this;
    nextBlockCoords.forEach(function(coord) {
@@ -324,9 +321,9 @@ Block.types = {
    },
    "L": {
       "0": [new Coord(1,0), new Coord(1,1), new Coord(1,2), new Coord(2,0)],
-      "1": [new Coord(0,0), new Coord(0,1), new Coord(1,1), new Coord(2,1)],
+      "1": [new Coord(0,1), new Coord(1,1), new Coord(2,1), new Coord(2,2)],
       "2": [new Coord(0,2), new Coord(1,0), new Coord(1,1), new Coord(1,2)],
-      "3": [new Coord(0,1), new Coord(1,1), new Coord(2,1), new Coord(2,2)]
+      "3": [new Coord(0,0), new Coord(0,1), new Coord(1,1), new Coord(2,1)]
    },
    "O": {
       "0": [new Coord(1,1), new Coord(1,2), new Coord(2,1), new Coord(2,2)],
@@ -388,6 +385,8 @@ function Quadrix(rootNode) {
          case 40:  // Down
             self.game.userMoveBlock("down");
             break;
+         case 80:  // 'P'
+            break;
          default:
             break;
       }
@@ -427,6 +426,7 @@ Quadrix.prototype.newGame = function() {
 Quadrix.prototype.pauseGame = function() {
    clearInterval(this.gameTimer);
    removeEventListener("keydown", this.handleGameInput);
+   actionButton.textContent = "Resume";
    this.gameStatus = "paused";
 };
 
@@ -472,9 +472,9 @@ Quadrix.getTickRate = (function() {
       else if (level == 8)
          return 120;
       else if (level == 9)
-         return 110;
+         return 100;
       else
-         return Math.max(110 - 10 * (level - 9), 10);
+         return Math.max(100 - 20 * (level - 9), 20);
    };
 })();
 
@@ -490,7 +490,6 @@ actionButton.addEventListener("click", function() {
       actionButton.textContent = "Pause";
    } else if (quadrix.gameStatus == "running") {
       quadrix.pauseGame();
-      actionButton.textContent = "Resume";
    } else if (quadrix.gameStatus == "paused") {
       quadrix.resumeGame();
       actionButton.textContent = "Pause";

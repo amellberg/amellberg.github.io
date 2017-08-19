@@ -27,14 +27,15 @@ function Game(height, width, context, callbacks, rootNode) {
 
    this.blockPreview = document.createElement("table");
    this.blockPreview.id = "previewTable";
-   for (var i = 0; i < 4; i++) {
-      var row = document.createElement("tr");
-      for (var j = 0; j < 4; j++) {
-         var cell = document.createElement("td");
-         row.appendChild(cell);
-      }
-      this.blockPreview.appendChild(row);
-   }
+
+   //for (var i = 0; i < 4; i++) {
+   //   var row = document.createElement("tr");
+   //   for (var j = 0; j < 4; j++) {
+   //      var cell = document.createElement("td");
+   //      row.appendChild(cell);
+   //   }
+   //   this.blockPreview.appendChild(row);
+   //}
 
    this.currBlock = null;
    this.nextBlockType = "";
@@ -79,13 +80,43 @@ Game.prototype.spawnBlock = function() {
    this.nextBlockType =
          blockTypes[Math.floor(Math.random() * blockTypes.length)];
 
-   for (var i = 0; i < 4; i++)
-      for (var j = 0; j < 4; j++) {
-         this.blockPreview.childNodes[i].childNodes[j].className = "";
+   // Figure out the dimensions of the table for next block preview
+   var nextBlockCoords = Block.types[this.nextBlockType]["0"];
+   var minY = nextBlockCoords.reduce(function(acc, coord) {
+      return Math.min(acc, coord.y);
+   }, nextBlockCoords[0].y);
+   var maxY = nextBlockCoords.reduce(function(acc, coord) {
+      return Math.max(acc, coord.y);
+   }, nextBlockCoords[0].y);
+   var minX = nextBlockCoords.reduce(function(acc, coord) {
+      return Math.min(acc, coord.x);
+   }, nextBlockCoords[0].x);
+   var maxX = nextBlockCoords.reduce(function(acc, coord) {
+      return Math.max(acc, coord.x);
+   }, nextBlockCoords[0].x);
+
+   var height = maxY - minY + 1;
+   var width = maxX - minX + 1;
+   console.log("height: ", height);
+   console.log("width: ", width);
+
+   while (this.blockPreview.firstChild)
+      this.blockPreview.removeChild(this.blockPreview.firstChild);
+
+   for (var i = 0; i < height; i++) {
+      var row = document.createElement("tr");
+      for (var j = 0; j < width; j++) {
+         var cell = document.createElement("td");
+         row.appendChild(cell);
       }
+      this.blockPreview.appendChild(row);
+   }
+   console.log(this.blockPreview);
+
    var self = this;
-   Block.types[this.nextBlockType]["0"].forEach(function(coord) {
-      self.blockPreview.childNodes[coord.y].childNodes[coord.x].className = self.nextBlockType;
+   nextBlockCoords.forEach(function(coord) {
+      self.blockPreview.childNodes[coord.y - minY].childNodes[coord.x - minX].className
+            = self.nextBlockType;
    });
 };
 

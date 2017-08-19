@@ -15,13 +15,12 @@ function Game(height, width, context, callbacks, rootNode) {
       var gridRow = this.grid[i];
       var boardRow = document.createElement("tr");
       for (var j = 0; j < gridRow.length; j++) {
-         var gridCell = gridRow[j];
          var boardCell = document.createElement("td");
          //boardCell.textContent = String(i) + "," + String(j);  // DEBUG
          boardRow.appendChild(boardCell);
       }
       this.board.appendChild(boardRow);
-   };
+   }
    rootNode.appendChild(this.board);
    this.board.firstChild.style.display = "none";  // Hide first row
 
@@ -49,7 +48,7 @@ Game.prototype.renderBoard = function() {
       self.board.childNodes[coord.y]
                 .childNodes[coord.x].className = self.currBlock.type;
    });
-}
+};
 
 Game.prototype.spawnBlock = function() {
    for (var j = 0; j < this.grid[0].length; j++)
@@ -60,7 +59,7 @@ Game.prototype.spawnBlock = function() {
    var blockTypes = Object.keys(Block.types);
    this.currBlock = new Block(
       blockTypes[Math.floor(Math.random() * blockTypes.length)]);
-}
+};
 
 Game.prototype.packGrid = function() {
    // Get min and max y grid-coords in block (we don't need to pack the
@@ -87,8 +86,9 @@ Game.prototype.packGrid = function() {
          linesCleared++;
       }
    }
-   this.updateScore(linesCleared);
-}
+   if (linesCleared > 0)
+      this.updateScore(linesCleared);
+};
 
 Game.prototype.updateScore = function(linesCleared) {
    // We use the following scoring formula, based on the number of lines
@@ -116,13 +116,14 @@ Game.prototype.updateScore = function(linesCleared) {
          this.callbacks.onLevelUpdate.call(this.context, this.level);
       }
    this.totalLinesCleared += linesCleared;
-}
+   //console.log(this.totalLinesCleared);
+};
 
 Game.prototype.tick = function() {
 
    this.lowerBlock();
    this.renderBoard();
-}
+};
 
 Game.prototype.userDropBlock = function() {
    var levels = this.getLevels();
@@ -144,7 +145,7 @@ Game.prototype.userDropBlock = function() {
    this.packGrid();  // Makes use of new coords in currBlock
    this.spawnBlock();
    this.renderBoard();
-}
+};
 
 // Called both on tick and on user down move
 Game.prototype.lowerBlock = function() {
@@ -165,7 +166,7 @@ Game.prototype.lowerBlock = function() {
    }
    this.renderBoard();
 
-}
+};
 
 Game.prototype.userMoveBlock = function(direction) {
    var newCoords = null;
@@ -184,7 +185,7 @@ Game.prototype.userMoveBlock = function(direction) {
       this.currBlock.coords = newCoords;
       this.renderBoard();
    }
-}
+};
 
 Game.prototype.userRotateBlock = function() {
    var rotationData = this.currBlock.getNextRotation();
@@ -193,7 +194,7 @@ Game.prototype.userRotateBlock = function() {
       this.currBlock.rotation = rotationData.rotation;
       this.renderBoard();
    }
-}
+};
 
 // Parameter 'coords' is a nonempty array of Coord objects to be checked
 // for collision against grid borders and (resting) tetromino blocks.
@@ -208,11 +209,11 @@ Game.prototype.checkCollision = function(coords) {
          return false;
    }
    return true;
-}
+};
 
 Game.prototype.getLevels = function() {
    var levels = [];
-   for (k = 0; k < this.currBlock.coords.length; k++) {
+   for (var k = 0; k < this.currBlock.coords.length; k++) {
       var coord = this.currBlock.coords[k];
 
       var level = 0;
@@ -222,7 +223,7 @@ Game.prototype.getLevels = function() {
       levels.push(level);
    }
    return levels;
-}
+};
 
 // Block -----------------------------------------------------------------------
 
@@ -249,7 +250,7 @@ Block.prototype.getNextRotation = function() {
    });
 
    return { coords: rotatedCoords, rotation: nextRotation };
-}
+};
 
 Block.types = {
    "I": {
@@ -285,7 +286,7 @@ Block.types = {
       "0": [new Coord(1,0), new Coord(1,1), new Coord(2,1), new Coord(2,2)],
       "1": [new Coord(0,2), new Coord(1,1), new Coord(1,2), new Coord(2,1)],
    }
-}
+};
 
 // Coord ----------------------------------------------------------------------
 
@@ -356,13 +357,13 @@ Quadrix.prototype.newGame = function() {
 
    addEventListener("keydown", this.handleGameInput);
    this.gameStatus = "running";
-}
+};
 
 Quadrix.prototype.pauseGame = function() {
    clearInterval(this.gameTimer);
    removeEventListener("keydown", this.handleGameInput);
    this.gameStatus = "paused";
-}
+};
 
 Quadrix.prototype.resumeGame = function() {
    var self = this;
@@ -372,7 +373,7 @@ Quadrix.prototype.resumeGame = function() {
 
    addEventListener("keydown", this.handleGameInput);
    this.gameStatus = "running";
-}
+};
 
 // Passed as a callback to Game, executed on game over
 Quadrix.prototype.stopGame = function() {
@@ -381,11 +382,11 @@ Quadrix.prototype.stopGame = function() {
    document.getElementById("action").textContent = "New game";
    this.gameStatus = "stopped";
    // TODO: hide preview box, possibly update high score
-}
+};
 
 Quadrix.prototype.handleScoreUpdate = function(score) {
    document.getElementById("score").textContent = "Score: " + score;
-}
+};
 
 Quadrix.prototype.handleLevelUpdate = function(level) {
    clearInterval(this.gameTimer);
@@ -395,7 +396,7 @@ Quadrix.prototype.handleLevelUpdate = function(level) {
    }, Quadrix.getTickRate(level));
 
    document.getElementById("level").textContent = "Level: " + level;
-}
+};
 
 Quadrix.getTickRate = (function() {
    return function(level) {
@@ -409,7 +410,7 @@ Quadrix.getTickRate = (function() {
          return 110;
       else
          return Math.max(110 - 10 * (level - 9), 10);
-   }
+   };
 })();
 
 //------------------------------------------------------------------------------

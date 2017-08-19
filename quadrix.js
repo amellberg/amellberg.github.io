@@ -28,15 +28,6 @@ function Game(height, width, context, callbacks, rootNode) {
    this.blockPreview = document.createElement("table");
    this.blockPreview.id = "previewTable";
 
-   //for (var i = 0; i < 4; i++) {
-   //   var row = document.createElement("tr");
-   //   for (var j = 0; j < 4; j++) {
-   //      var cell = document.createElement("td");
-   //      row.appendChild(cell);
-   //   }
-   //   this.blockPreview.appendChild(row);
-   //}
-
    this.currBlock = null;
    this.nextBlockType = "";
 
@@ -80,7 +71,9 @@ Game.prototype.spawnBlock = function() {
    this.nextBlockType =
          blockTypes[Math.floor(Math.random() * blockTypes.length)];
 
-   // Figure out the dimensions of the table for next block preview
+   // Figure out the dimensions of the table for next block preview.
+   // Unlike for the main game table we can't reuse the rows and cells,
+   // since the tetrominoes are of varying dimensions.
    var nextBlockCoords = Block.types[this.nextBlockType]["0"];
    var minY = nextBlockCoords.reduce(function(acc, coord) {
       return Math.min(acc, coord.y);

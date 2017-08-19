@@ -11,6 +11,7 @@ function Game(height, width, context, callbacks, rootNode) {
    }
 
    this.board = document.createElement("table");
+   this.board.id = "gameTable";
    for (var i = 0; i < this.grid.length; i++) {
       var gridRow = this.grid[i];
       var boardRow = document.createElement("tr");
@@ -24,7 +25,19 @@ function Game(height, width, context, callbacks, rootNode) {
    rootNode.appendChild(this.board);
    this.board.firstChild.style.display = "none";  // Hide first row
 
+   this.blockPreview = document.createElement("table");
+   this.blockPreview.id = "previewTable";
+   for (var i = 0; i < 4; i++) {
+      var row = document.createElement("tr");
+      for (var j = 0; j < 4; j++) {
+         var cell = document.createElement("td");
+         row.appendChild(cell);
+      }
+      this.blockPreview.appendChild(row);
+   }
+
    this.currBlock = null;
+   this.nextBlockType = "";
 
    this.level = 0;
    this.score = 0;
@@ -56,9 +69,24 @@ Game.prototype.spawnBlock = function() {
          this.callbacks.onGameOver.call(this.context);
          return;
       }
+
    var blockTypes = Object.keys(Block.types);
-   this.currBlock = new Block(
-      blockTypes[Math.floor(Math.random() * blockTypes.length)]);
+   if (this.nextBlockType == "")
+      this.currBlock = new Block(
+            blockTypes[Math.floor(Math.random() * blockTypes.length)]);
+   else
+      this.currBlock = new Block(this.nextBlockType);
+   this.nextBlockType =
+         blockTypes[Math.floor(Math.random() * blockTypes.length)];
+
+   for (var i = 0; i < 4; i++)
+      for (var j = 0; j < 4; j++) {
+         this.blockPreview.childNodes[i].childNodes[j].className = "";
+      }
+   var self = this;
+   Block.types[this.nextBlockType]["0"].forEach(function(coord) {
+      self.blockPreview.childNodes[coord.y].childNodes[coord.x].className = self.nextBlockType;
+   });
 };
 
 Game.prototype.packGrid = function() {
@@ -343,9 +371,15 @@ function Quadrix(rootNode) {
 
 Quadrix.prototype.newGame = function() {
    this.rootNode.removeChild(this.rootNode.firstChild);
+
    this.game = new Game(21, 10, this, this.callbackHandlers, this.rootNode);
    this.game.spawnBlock();
    this.game.renderBoard();
+
+   var previewNode = document.getElementById("preview-container");
+   if (previewNode.firstChild)
+      previewNode.removeChild(previewNode.firstChild);
+   previewNode.appendChild(this.game.blockPreview);
 
    document.getElementById("score").textContent = "Score: 0";
    document.getElementById("level").textContent = "Level: 0";

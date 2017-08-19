@@ -447,10 +447,11 @@ Quadrix.prototype.handleScoreUpdate = function(score) {
 
 Quadrix.prototype.handleLevelUpdate = function(level) {
    clearInterval(this.gameTimer);
+   this.tickRate = Quadrix.getTickRate(level);
    var self = this;
    this.gameTimer = setInterval(function() {
       self.game.tick();
-   }, Quadrix.getTickRate(level));
+   }, this.tickRate);
 
    document.getElementById("level").textContent = "Level: " + level;
 };
@@ -476,8 +477,6 @@ actionButton.addEventListener("click", function() {
       actionButton.textContent = "Pause";
    } else if (quadrix.gameStatus == "running") {
       quadrix.pauseGame();
-      for (var i = 0; i < 20; i++)
-         console.log(Quadrix.getTickRate(i));
    } else if (quadrix.gameStatus == "paused") {
       quadrix.resumeGame();
       actionButton.textContent = "Pause";

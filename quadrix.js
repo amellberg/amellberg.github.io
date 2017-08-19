@@ -71,9 +71,10 @@ Game.prototype.spawnBlock = function() {
    this.nextBlockType =
          blockTypes[Math.floor(Math.random() * blockTypes.length)];
 
-   // Figure out the dimensions of the table for next block preview.
+   // Figure out the dimensions of the table for the next block preview.
    // Unlike for the main game table we can't reuse the rows and cells,
-   // since the tetrominoes are of varying dimensions.
+   // since the tetrominoes are of varying dimensions and we want a
+   // good-looking output.
    var nextBlockCoords = Block.types[this.nextBlockType]["0"];
    var minY = nextBlockCoords.reduce(function(acc, coord) {
       return Math.min(acc, coord.y);
@@ -180,6 +181,7 @@ Game.prototype.userDropBlock = function() {
    for (var k = 1; k < levels.length; k++)
       if (levels[k] < minLevel)
          minLevel = levels[k];
+   //console.log(minLevel);
 
    this.currBlock.coords = this.currBlock.coords.map(function(coord) {
       return coord.plus(new Coord(minLevel, 0));
@@ -203,8 +205,8 @@ Game.prototype.lowerBlock = function() {
          return coord.plus(new Coord(1, 0));
       });
    } else {
-      // Block can go no further down; put it into the grid and
-      // spawn a new block.
+      // Block can go no further down; put it into the grid and spawn
+      // a new block.
       var self = this;
       this.currBlock.coords.forEach(function(coord) {
          self.grid[coord.y][coord.x] = self.currBlock.type;
@@ -461,8 +463,10 @@ Quadrix.getTickRate = (function() {
    return function(level) {
       if (level <= 6)
          return 600 - 70 * level;
+      else if (7 <= level && level <= 9)
+         return 140 - 20 * (level - 7);
       else
-         return Math.max(140 - 20 * (level - 7), 20);
+         return Math.max(100 - 10 * (level - 9), 50);
    };
 })();
 

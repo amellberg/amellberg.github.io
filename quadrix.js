@@ -485,8 +485,3 @@ actionButton.addEventListener("click", function() {
       actionButton.textContent = "Pause";
    }
 });
-
-document.getElementById("about").addEventListener("click", function() {
-   alert("Quadrix. Definitely not Tetris.\n" +
-         "Written by Andreas Mellberg (andreas.mellberg@gmail.com).");
-});

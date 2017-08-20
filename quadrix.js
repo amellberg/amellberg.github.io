@@ -459,16 +459,14 @@ Quadrix.prototype.handleLevelUpdate = function(level) {
    document.getElementById("level").textContent = "Level: " + level;
 };
 
-Quadrix.getTickRate = (function() {
-   return function(level) {
-      if (level <= 6)
-         return 600 - 70 * level;
-      else if (7 <= level && level <= 9)
-         return 140 - 20 * (level - 7);
-      else
-         return Math.max(100 - 10 * (level - 9), 50);
-   };
-})();
+Quadrix.getTickRate = function(level) {
+   if (level <= 6)
+      return 600 - 70 * level;
+   else if (7 <= level && level <= 9)
+      return 140 - 20 * (level - 7);
+   else
+      return Math.max(100 - 10 * (level - 9), 50);
+};
 
 //------------------------------------------------------------------------------
 

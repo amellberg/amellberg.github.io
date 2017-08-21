@@ -136,9 +136,32 @@ Game.prototype.packGrid = function() {
          linesCleared++;
       }
    }
+   if (linesCleared >= 4)
+      flashLogo(4);
    if (linesCleared > 0)
       this.updateScore(linesCleared);
 };
+
+var flashLogo = (function() {
+   var counter = 1;
+   var on = false;
+   return function(times) {
+      var logo = document.getElementById("header");
+      if (!on) {
+         logo.style.color = "rgba(255, 255, 255, 0.9)";
+         on = true;
+      } else {
+         logo.style.color = "rgba(255, 255, 255, 0.25)";
+         on = false;
+      }
+      if (counter < 2 * times) {
+         counter++;
+         setTimeout(function() { flashLogo(times); }, 50);
+      } else {
+         counter = 1;
+      }
+   }
+})();
 
 Game.prototype.updateScore = function(linesCleared) {
    // We use the following scoring formula, based on the number of lines
@@ -377,7 +400,12 @@ function Quadrix(rootNode) {
             self.game.userMoveBlock("right");
             break;
          case 40:  // Down
-            self.game.userMoveBlock("down");
+            // Ugly way to handle the option of having down-arrow drop block;
+            // I will redo this later.
+            if (self.options.downDrop)
+               self.game.userDropBlock();
+            else
+               self.game.userMoveBlock("down");
             break;
          case 80:  // 'P'
             break;
@@ -468,6 +496,10 @@ Quadrix.getTickRate = function(level) {
       return Math.max(100 - 10 * (level - 9), 50);
 };
 
+Quadrix.prototype.options = {
+   downDrop: false
+};
+
 //------------------------------------------------------------------------------
 
 var quadrix = new Quadrix(document.getElementById("root"));
@@ -484,4 +516,34 @@ actionButton.addEventListener("click", function() {
       quadrix.resumeGame();
       actionButton.textContent = "Pause";
    }
+});
+
+var optionsModal = document.getElementById("options-modal");
+document.getElementById("options").addEventListener("click", function(event) {
+   optionsModal.style.visibility = optionsModal.style.visibility == "visible" ?
+                                   "hidden" : "visible";
+   event.stopPropagation();
+});
+
+addEventListener("click", function(event) {
+   if (event.target.id.indexOf("options-") != -1)
+      return;
+   if (optionsModal.style.visibility == "visible") {
+      optionsModal.style.visibility = "hidden";
+   }
+});
+
+document.getElementById("options-grid").addEventListener("click", function() {
+   //var gameCells = document.querySelectorAll("#gameTable td");
+   //if (gameCells[0].style.borderColor == "")
+   //   for (var k = 0; k < gameCells.length; k++)
+   //      gameCells[k].style.borderColor = "#000000";
+   //else
+   //   for (var k = 0; k < gameCells.length; k++)
+   //      gameCells[k].style.borderColor = "";
+});
+
+document.getElementById("options-downdrop")
+        .addEventListener("click", function(event) {
+   quadrix.options.downDrop = !quadrix.options.downDrop;
 });

@@ -5,7 +5,7 @@
    <title>Quadrix</title>
    <link rel="stylesheet" href="index.css"></style>
    <link rel="stylesheet"
-         href="https://fonts.googleapis.com/css?family=Share+Tech+Mono">
+         href="https://fonts.googleapis.com/css?family=Roboto|Share+Tech+Mono">
 </head>
 <body>
    <div id="left-container">
@@ -14,12 +14,30 @@
       <div class="stat" id="level">Level: 0</div>
       <div class="buttons">
          <p><div class="button" id="action">New game</div></p>
-         <p><div class="button" id="hiscore">Top scores</div></p>
-         <p><div class="button" id="Options">Options</div></p>
+         <p><div class="button" id="topscores">Top scores</div></p>
+         <p><div class="button" id="options">Options</div></p>
       </div>
       <div id="preview-container"></div>
    </div>
    <div id="root"></div>
+
+   <div id="options-modal">
+      <form>
+         <div><label id="options-label-grid">
+            <input type="checkbox" id="options-grid" checked>
+            Show grid
+         </label></div>
+         <div><label id="options-label-downdrop">
+            <input type="checkbox" id="options-downdrop">
+            Down-arrow to drop block
+         </label></div>
+         <div><label id="options-label-level">
+            Starting level:&nbsp;&nbsp;
+            <input type="number" id="options-level" step="1" min="0" value="0">
+         </label></div>
+      </form>
+   </div>
+
    <script src="quadrix.js"></script>
 </body>
 </html>

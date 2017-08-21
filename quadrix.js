@@ -1,7 +1,7 @@
 // Game ------------------------------------------------------------------------
 
 // Represents an individual game instance
-function Game(height, width, context, callbacks, rootNode) {
+function Game(height, width, startLevel, context, callbacks, rootNode) {
    this.grid = [];
    for (var i = 0; i < height; i++) {
       var row = [];
@@ -31,7 +31,7 @@ function Game(height, width, context, callbacks, rootNode) {
    this.currBlock = null;
    this.nextBlockType = "";
 
-   this.level = 0;
+   this.level = startLevel;
    this.score = 0;
    this.totalLinesCleared = 0;
 
@@ -140,6 +140,7 @@ Game.prototype.packGrid = function() {
       flashLogo(4);
    if (linesCleared > 0)
       this.updateScore(linesCleared);
+
 };
 
 var flashLogo = (function() {
@@ -179,6 +180,7 @@ Game.prototype.updateScore = function(linesCleared) {
       case 4: factor = 120; break;
       default: break;
    }
+
    this.score += factor * (this.level + 1);
    this.callbacks.onScoreUpdate.call(this.context, this.score);
 
@@ -382,7 +384,7 @@ function Quadrix(rootNode) {
    this.gameStatus = "stopped";
    this.gameTimer = 0;
    this.tickRate = Quadrix.getTickRate(0);
-   this.game = new Game(21, 10, this, null, rootNode);
+   this.game = new Game(21, 10, 0, this, null, rootNode);
 
    var self = this;
    this.handleGameInput = function(event) {
@@ -426,7 +428,9 @@ function Quadrix(rootNode) {
 Quadrix.prototype.newGame = function() {
    this.rootNode.removeChild(this.rootNode.firstChild);
 
-   this.game = new Game(21, 10, this, this.callbackHandlers, this.rootNode);
+   var startLevel = Number(document.getElementById("options-level").value);
+   this.game = new Game(21, 10, startLevel, this, this.callbackHandlers,
+         this.rootNode);
    this.game.spawnBlock();
    this.game.renderBoard();
 
@@ -436,9 +440,9 @@ Quadrix.prototype.newGame = function() {
    previewNode.appendChild(this.game.blockPreview);
 
    document.getElementById("score").textContent = "Score: 0";
-   document.getElementById("level").textContent = "Level: 0";
+   document.getElementById("level").textContent = "Level: " + startLevel;
 
-   this.tickRate = Quadrix.getTickRate(0);
+   this.tickRate = Quadrix.getTickRate(startLevel);
    var self = this;
    this.gameTimer = setInterval(function() {
       self.game.tick();
@@ -514,7 +518,8 @@ Quadrix.getTickRate = function(level) {
 
 Quadrix.prototype.options = {
    downDrop: false,
-   grid: true
+   grid: true,
+   preview: true
 };
 
 //------------------------------------------------------------------------------
@@ -563,3 +568,7 @@ document.getElementById("options-downdrop")
         .addEventListener("click", function(event) {
    quadrix.options.downDrop = !quadrix.options.downDrop;
 });
+
+//document.getElementById("options-level").addEventListener("input", function(event) {
+//   console.log(event.target.value);
+//});

@@ -419,6 +419,8 @@ function Quadrix(rootNode) {
       onScoreUpdate: this.handleScoreUpdate,
       onLevelUpdate: this.handleLevelUpdate
    };
+
+   this.setGrid(true);
 }
 
 Quadrix.prototype.newGame = function() {
@@ -442,6 +444,7 @@ Quadrix.prototype.newGame = function() {
       self.game.tick();
    }, this.tickRate);
 
+   this.setGrid(this.options.grid);
    addEventListener("keydown", this.handleGameInput);
    this.gameStatus = "running";
 };
@@ -487,6 +490,19 @@ Quadrix.prototype.handleLevelUpdate = function(level) {
    document.getElementById("level").textContent = "Level: " + level;
 };
 
+Quadrix.prototype.setGrid = function(value) {
+   var gameCells = document.querySelectorAll("#gameTable td");
+   if (value) {
+      for (var k = 0; k < gameCells.length; k++)
+         gameCells[k].style.border = "1px solid rgb(20,20,20)";
+      this.options.grid = true;
+   } else {
+      for (var k = 0; k < gameCells.length; k++)
+         gameCells[k].style.border = "1px solid rgb(0,0,0)";
+      this.options.grid = false;
+   }
+}
+
 Quadrix.getTickRate = function(level) {
    if (level <= 6)
       return 600 - 70 * level;
@@ -497,7 +513,8 @@ Quadrix.getTickRate = function(level) {
 };
 
 Quadrix.prototype.options = {
-   downDrop: false
+   downDrop: false,
+   grid: true
 };
 
 //------------------------------------------------------------------------------
@@ -534,14 +551,13 @@ addEventListener("click", function(event) {
 });
 
 document.getElementById("options-grid").addEventListener("click", function() {
-   //var gameCells = document.querySelectorAll("#gameTable td");
-   //if (gameCells[0].style.borderColor == "")
-   //   for (var k = 0; k < gameCells.length; k++)
-   //      gameCells[k].style.borderColor = "#000000";
-   //else
-   //   for (var k = 0; k < gameCells.length; k++)
-   //      gameCells[k].style.borderColor = "";
+   if (quadrix.options.grid) {
+      quadrix.setGrid(false);
+   } else {
+      quadrix.setGrid(true);
+   }
 });
+
 
 document.getElementById("options-downdrop")
         .addEventListener("click", function(event) {

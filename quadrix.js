@@ -631,7 +631,8 @@ Quadrix.prototype.renderHighScores = function() {
       placementCell.textContent = k + 1;
       placementCell.style.textAlign = "right";
       var fontWeight = "";
-      if (this.highScores[k]._id == this.latestScoreId)
+      if (this.highScores.length > 0 &&
+          this.highScores[k]._id == this.latestScoreId)
          fontWeight = "bold";
       placementCell.style.fontWeight = fontWeight;
       row.appendChild(placementCell);

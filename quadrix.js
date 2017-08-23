@@ -440,7 +440,6 @@ function Quadrix(rootNode) {
    // the collection is updated, this.loadHighScores gets called.
    db.ref("highScores").on("value", this.loadHighScores.bind(this));
    this.loadData = true;
-   this.latestScoreId = "";
 }
 
 Quadrix.prototype.newGame = function() {
@@ -567,8 +566,6 @@ Quadrix.prototype.saveHighScore = function(name) {
    };
 
    var scoreRef = db.ref("highScores").push();
-   this.latestScoreId = scoreRef.key;
-
    if (this.highScores.length == 10) {
       var _id = this.highScores[this.highScores.length - 1]._id;
       // Firebase fires callback on both remove() and push(), so to prevent
@@ -616,12 +613,10 @@ Quadrix.prototype.renderHighScores = function() {
       return 0;
    });
 
-   var appendCell = function(entry, row, key, width, fontWeight) {
+   var appendCell = function(entry, row, key, width) {
       var cell = document.createElement("td");
       cell.textContent = entry[key];
       cell.style.width = width;
-      if (fontWeight != "")
-         cell.style.fontWeight = fontWeight;
       row.appendChild(cell);
    };
 
@@ -630,11 +625,6 @@ Quadrix.prototype.renderHighScores = function() {
       var placementCell = document.createElement("td");
       placementCell.textContent = k + 1;
       placementCell.style.textAlign = "right";
-      var fontWeight = "";
-      if (k < this.highScores.length &&
-          this.highScores[k]._id == this.latestScoreId)
-         fontWeight = "bold";
-      placementCell.style.fontWeight = fontWeight;
       row.appendChild(placementCell);
       tableBody.appendChild(row);
       if (k >= this.highScores.length)
@@ -643,10 +633,10 @@ Quadrix.prototype.renderHighScores = function() {
       // Hard-coding this to get the ordering of the cells correct.
       // (There is no guarantee of ordering in an object, so a for...in
       // loop won't work smoothly.)
-      appendCell(this.highScores[k], row, "name", "40%", fontWeight);
-      appendCell(this.highScores[k], row, "score", "15%", fontWeight);
-      appendCell(this.highScores[k], row, "level", "15%", fontWeight);
-      appendCell(this.highScores[k], row, "date", "25%", fontWeight);
+      appendCell(this.highScores[k], row, "name", "40%");
+      appendCell(this.highScores[k], row, "score", "15%");
+      appendCell(this.highScores[k], row, "level", "15%");
+      appendCell(this.highScores[k], row, "date", "25%");
    }
 }
 

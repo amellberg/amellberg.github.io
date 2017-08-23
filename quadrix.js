@@ -589,9 +589,10 @@ Quadrix.prototype.loadHighScores = function(snapshot) {
       return;
    this.highScores = [];
    var data = snapshot.val();
+   var dateOptions = { year: "numeric", month: "short", day: "numeric" };
    for (key in data) {  // Here key is the ID of the entry
       var entry = data[key];
-      entry.date = new Date(entry.date).toISOString().substr(0, 10);
+      entry.date = new Date(entry.date).toLocaleDateString("sv-SE", dateOptions);//toISOString().substr(0, 10);
       entry._id = key;
       this.highScores.push(entry);
    }

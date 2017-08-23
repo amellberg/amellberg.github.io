@@ -631,7 +631,7 @@ Quadrix.prototype.renderHighScores = function() {
       placementCell.textContent = k + 1;
       placementCell.style.textAlign = "right";
       var fontWeight = "";
-      if (this.highScores.length > 0 &&
+      if (k < this.highScores.length &&
           this.highScores[k]._id == this.latestScoreId)
          fontWeight = "bold";
       placementCell.style.fontWeight = fontWeight;
@@ -715,5 +715,5 @@ document.querySelector("#name-modal input")
 
 window.addEventListener("keydown", function(e) { // TODO: remove
    if (e.keyCode == 36)
-      console.log(quadrix.latestScoreId);
+      console.log(quadrix.highScores);
 })

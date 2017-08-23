@@ -14,28 +14,22 @@
       <div class="stat" id="level">Level: 0</div>
       <div class="buttons">
          <p><div class="button" id="action">New game</div></p>
-         <p><div class="button" id="topscores">Top scores</div></p>
+         <p><div class="button" id="high-scores">High scores</div></p>
          <p><div class="button" id="options">Options</div></p>
       </div>
       <div id="preview-container"></div>
    </div>
    <div id="root"></div>
 
-   <div id="options-modal">
+   <div id="options-modal">  <!-- Hidden by default -->
       <form>
          <div><label id="options-label-grid">
             <input type="checkbox" id="options-grid" checked>
             Show grid
          </label></div>
-         <!--
-         <div><label id="options-label-preview">
-            <input type="checkbox" id="options-preview" checked>
-            Show next block
-         </label></div>
-         -->
          <div><label id="options-label-downdrop">
             <input type="checkbox" id="options-downdrop">
-            Down-arrow to drop block
+            Down-arrow drops block
          </label></div>
          <div><label id="options-label-level">
             Starting level:&nbsp;&nbsp;
@@ -44,6 +38,33 @@
       </form>
    </div>
 
+   <div id="hs-modal">
+      <div id="hs-header">High scores</div>
+      <table id="hs-table">
+         <thead>
+            <tr>
+               <th style="width: 5%; text-align: right;">#</th>
+               <th style="width: 40%">Name</th>
+               <th style="width: 15%">Score</th>
+               <th style="width: 15%">Level</th>
+               <th style="width: 25%">Date</th>
+            </tr>
+         </thead>
+         <tbody id="hs-table-body"></tbody>
+      </table>
+   </div>
+
+   <div id="name-modal">
+      <div id="name-modal-header">New high score!</div>
+      <div id="name-modal-msg">What's your name?</div>
+      <div>
+         <input type="text" maxlength="20" autofocus>
+      </div>
+   </div>
+
+   <script src="https://www.gstatic.com/firebasejs/4.3.0/firebase.js"></script>
+   <script src="https://www.gstatic.com/firebasejs/4.2.0/firebase-app.js"></script>
+   <script src="https://www.gstatic.com/firebasejs/4.2.0/firebase-database.js"></script>
    <script src="quadrix.js"></script>
 </body>
 </html>

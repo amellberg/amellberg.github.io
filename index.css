@@ -3,7 +3,7 @@ body {
 }
 
 #left-container {
-   width: 225px;
+   width: 200px;
    font-family: "Roboto", sans-serif;
    margin: 12px;
    float: left;
@@ -54,6 +54,7 @@ body {
 
 #root {
    margin: 12px;
+   margin-top: 18px;
    float: left;
    border: 1px solid rgb(30,30,30);
    /*outline: none;*/
@@ -130,7 +131,7 @@ label, input {
    vertical-align: middle;
 }
 
-label,input:hover {
+label:hover {
    cursor: pointer;
 }
 
@@ -141,4 +142,88 @@ label,input:hover {
 form > div {
    margin: 4px;
    margin-bottom: 5px;
+}
+
+#hs-modal {
+   background-color: #000;
+   text-align: center;
+   border-radius: 8px;
+   border: 1px solid rgb(50,50,50);
+   font-family: "Roboto", sans-serif;
+   font-size: 12px;
+   color: rgba(255, 255, 255, 0.7);
+   visibility: hidden;
+   position: absolute;
+   left: 215px;
+   top: 160px;
+   width: 320px;
+   height: 210px;
+   padding: 12px;
+   z-index: 1000;
+}
+
+#hs-header {
+   text-align: center;
+   font-size: 14px;
+   font-weight: bold;
+   letter-spacing: 1px;
+   margin-top: 2px;
+   margin-bottom: 13px;
+}
+
+#hs-table {
+   width: 100%;
+   margin-bottom: 8px;
+   border: none;
+   white-space: nowrap;
+}
+
+#hs-table > th {
+   border: "2px solid red";
+}
+
+#name-modal {
+   background-color: #000;
+   border-radius: 8px;
+   border: 1px solid rgb(50,50,50);
+   font-family: "Roboto", sans-serif;
+   font-size: 12px;
+   color: rgba(255, 255, 255, 0.7);
+   visibility: hidden;
+   position: absolute;
+   left: 305px;
+   top: 240px;
+   padding: 8px;
+   z-index: 1000;
+   padding-left:12px;
+   padding-right:13px;
+   padding-bottom: 13px;
+}
+
+#name-modal-header {
+   font-size: 14px;
+   font-weight: bold;
+   letter-spacing: 1px;
+   margin-top: 2px;
+   margin-bottom: 12px;
+   width: 100%;
+   text-align: center;
+}
+
+#name-modal-msg {
+   margin-bottom: 8px;
+}
+
+#name-modal input {
+   width: 120px;
+   vertical-align: middle;
+   font-family: "Roboto", sans-serif;
+   font-size: 12px;
+}
+
+#name-modal button {
+   margin-left: 6px;
+   vertical-align: middle;
+   font-family: "Roboto", sans-serif;
+   font-size: 12px;
 }

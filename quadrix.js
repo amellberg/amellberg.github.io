@@ -58,7 +58,7 @@ Game.prototype.renderBoard = function() {
 Game.prototype.spawnBlock = function() {
    for (var j = 0; j < this.grid[0].length; j++)
       if (this.grid[1][j] != null) {
-         this.callbacks.onGameOver.call(this.context);
+         this.callbacks.onGameOver.call(this.context, this.score, this.level);
          return;
       }
 
@@ -378,6 +378,18 @@ Coord.prototype.minus = function(other) {
 
 // Quadrix ---------------------------------------------------------------------
 
+// Initialize Firebase
+var config = {
+ apiKey: "AIzaSyBQrebUmCqmy4r1dYGpDOf6-kmgf8M2K-w",
+ authDomain: "quadrix-639de.firebaseapp.com",
+ databaseURL: "https://quadrix-639de.firebaseio.com",
+ projectId: "quadrix-639de",
+ storageBucket: "quadrix-639de.appspot.com",
+ messagingSenderId: "1058568698217"
+};
+firebase.initializeApp(config);
+var db = firebase.database();
+
 // Main controller
 function Quadrix(rootNode) {
    this.rootNode = rootNode;
@@ -422,7 +434,13 @@ function Quadrix(rootNode) {
       onLevelUpdate: this.handleLevelUpdate
    };
 
+   this.highScores = [];
    this.setGrid(true);
+   // Setup listener to Firebase "highScores" collection. Each time
+   // the collection is updated, this.loadHighScores gets called.
+   db.ref("highScores").on("value", this.loadHighScores.bind(this));
+   this.loadData = true;
+   this.latestScoreId = "";
 }
 
 Quadrix.prototype.newGame = function() {
@@ -471,11 +489,13 @@ Quadrix.prototype.resumeGame = function() {
 };
 
 // Passed as a callback to Game, executed on game over
-Quadrix.prototype.stopGame = function() {
+Quadrix.prototype.stopGame = function(finalScore, finalLevel) {
    clearInterval(this.gameTimer);
    removeEventListener("keydown", this.handleGameInput);
    document.getElementById("action").textContent = "New game";
    this.gameStatus = "stopped";
+
+   this.evaluateGame(finalScore, finalLevel);
    // TODO: hide preview box, possibly update high score
 };
 
@@ -519,14 +539,122 @@ Quadrix.getTickRate = function(level) {
 Quadrix.prototype.options = {
    downDrop: false,
    grid: true,
-   preview: true
 };
+
+Quadrix.prototype.evaluateGame = function(score, level) {
+   if (score == 0)
+      return;
+   var lastEntry = this.highScores[this.highScores.length - 1];
+   // (lastEntry might be undefined here, which is OK.)
+   if (this.highScores.length < 10 || score > lastEntry.score ||
+      (score == lastEntry.score && level > lastEntry.level))
+   {
+      this.score = score;
+      this.level = level;
+      document.getElementById("name-modal").style.visibility = "visible";
+      var input = document.querySelector("#name-modal input");
+      input.focus();
+      input.select();
+   }
+}
+
+Quadrix.prototype.saveHighScore = function(name) {
+   var entry = {
+      name: name,
+      score: this.score,
+      level: this.level,
+      date: new Date().getTime()
+   };
+
+   var scoreRef = db.ref("highScores").push();
+   this.latestScoreId = scoreRef.key;
+
+   if (this.highScores.length == 10) {
+      var _id = this.highScores[this.highScores.length - 1]._id;
+      // Firebase fires callback on both remove() and push(), so to prevent
+      // rebuilding the display data on remove() we use a loadData flag:
+      this.loadData = false;
+      var self = this;
+      db.ref("highScores/" + _id).remove(function() {
+         self.loadData = true;
+         scoreRef.set(entry);
+      });
+   } else {
+      scoreRef.set(entry);
+   }
+   document.getElementById("name-modal").style.visibility = "hidden";
+   document.getElementById("hs-modal").style.visibility = "visible";
+}
+
+// Called by Firebase each time the database is updated in some way
+Quadrix.prototype.loadHighScores = function(snapshot) {
+   if (!this.loadData)
+      return;
+   this.highScores = [];
+   var data = snapshot.val();
+   for (key in data) {  // Here key is the ID of the entry
+      var entry = data[key];
+      entry.date = new Date(entry.date).toISOString().substr(0, 10);
+      entry._id = key;
+      this.highScores.push(entry);
+   }
+   this.renderHighScores();
+}
+
+Quadrix.prototype.renderHighScores = function() {
+   var tableBody = document.getElementById("hs-table-body");
+   while (tableBody.firstChild)
+      tableBody.removeChild(tableBody.firstChild);
+
+   this.highScores.sort(function(a, b) {
+      if (a.score > b.score) return -1;
+      if (a.score < b.score) return 1;
+      if (a.level > b.level) return -1;
+      if (a.level < b.level) return 1;
+      if (a.name.toLowerCase() < b.name.toLowerCase()) return -1;
+      if (a.name.toLowerCase() > b.name.toLowerCase()) return 1;
+      return 0;
+   });
+
+   var appendCell = function(entry, row, key, width, fontWeight) {
+      var cell = document.createElement("td");
+      cell.textContent = entry[key];
+      cell.style.width = width;
+      if (fontWeight != "")
+         cell.style.fontWeight = fontWeight;
+      row.appendChild(cell);
+   };
+
+   for (var k = 0; k < 10; k++) {
+      var row = document.createElement("tr");
+      var placementCell = document.createElement("td");
+      placementCell.textContent = k + 1;
+      placementCell.style.textAlign = "right";
+      var fontWeight = "";
+      if (this.highScores[k]._id == this.latestScoreId)
+         fontWeight = "bold";
+      placementCell.style.fontWeight = fontWeight;
+      row.appendChild(placementCell);
+      tableBody.appendChild(row);
+      if (k >= this.highScores.length)
+         continue;
+
+      // Hard-coding this to get the ordering of the cells correct.
+      // (There is no guarantee of ordering in an object, so a for...in
+      // loop won't work smoothly.)
+      appendCell(this.highScores[k], row, "name", "40%", fontWeight);
+      appendCell(this.highScores[k], row, "score", "15%", fontWeight);
+      appendCell(this.highScores[k], row, "level", "15%", fontWeight);
+      appendCell(this.highScores[k], row, "date", "25%", fontWeight);
+   }
+}
 
 //------------------------------------------------------------------------------
 
 var quadrix = new Quadrix(document.getElementById("root"));
 
-// Setup interface event handlers
+// Setup interface event handlers ----------------------------------------------
+
 var actionButton = document.getElementById("action");
 actionButton.addEventListener("click", function() {
    if (quadrix.gameStatus == "stopped") {
@@ -546,13 +674,12 @@ document.getElementById("options").addEventListener("click", function(event) {
                                    "hidden" : "visible";
    event.stopPropagation();
 });
-
+// For hiding the Options modal
 addEventListener("click", function(event) {
    if (event.target.id.indexOf("options-") != -1)
       return;
-   if (optionsModal.style.visibility == "visible") {
+   if (optionsModal.style.visibility == "visible")
       optionsModal.style.visibility = "hidden";
-   }
 });
 
 document.getElementById("options-grid").addEventListener("click", function() {
@@ -563,12 +690,29 @@ document.getElementById("options-grid").addEventListener("click", function() {
    }
 });
 
-
 document.getElementById("options-downdrop")
         .addEventListener("click", function(event) {
    quadrix.options.downDrop = !quadrix.options.downDrop;
 });
 
-//document.getElementById("options-level").addEventListener("input", function(event) {
-//   console.log(event.target.value);
-//});
+var highScoresModal = document.getElementById("hs-modal");
+document.getElementById("high-scores").addEventListener("click", function(event) {
+   highScoresModal.style.visibility = highScoresModal.style.visibility == "visible" ?
+                                      "hidden" : "visible";
+   event.stopPropagation();
+});
+addEventListener("click", function(event) {
+   if (highScoresModal.style.visibility == "visible")
+      highScoresModal.style.visibility = "hidden";
+});
+
+document.querySelector("#name-modal input")
+        .addEventListener("keydown", function(event) {
+   if (event.target.value.length > 0 && event.keyCode == 13)
+      quadrix.saveHighScore(event.target.value);
+});
+
+window.addEventListener("keydown", function(e) { // TODO: remove
+   if (e.keyCode == 36)
+      console.log(quadrix.latestScoreId);
+})

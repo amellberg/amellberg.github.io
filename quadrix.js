@@ -196,7 +196,7 @@ Game.prototype.updateScore = function(linesCleared) {
 
 Game.prototype.tick = function() {
    this.lowerBlock();
-   this.renderBoard();
+   //this.renderBoard();
 };
 
 Game.prototype.userDropBlock = function() {

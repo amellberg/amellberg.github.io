@@ -146,8 +146,8 @@ Game.prototype.packGrid = function() {
 var flashLogo = (function() {
    var counter = 1;
    var on = false;
+   var logo = document.getElementById("header");
    return function(times) {
-      var logo = document.getElementById("header");
       if (!on) {
          logo.style.color = "rgba(255, 255, 255, 0.9)";
          on = true;
@@ -592,7 +592,7 @@ Quadrix.prototype.loadHighScores = function(snapshot) {
    var dateOptions = { year: "numeric", month: "short", day: "numeric" };
    for (key in data) {  // Here key is the ID of the entry
       var entry = data[key];
-      entry.date = new Date(entry.date).toLocaleDateString("sv-SE", dateOptions);//toISOString().substr(0, 10);
+      entry.date = new Date(entry.date).toLocaleDateString("sv-SE", dateOptions);
       entry._id = key;
       this.highScores.push(entry);
    }
